@@ -41,11 +41,16 @@ class Producer(SocketClient):
 
 
 class BaseConsumer(SocketClient):
-    queue = ''
-    expression = ''
-    name = ''
-    depends_on = []
-    is_consuming = True
+
+    def __init__(self, host, port, **kwargs):
+        self.is_consuming = True
+        self.queue = kwargs.get('queue')
+        self.expression = kwargs.get('expression')
+        self.name = kwargs.get('name')
+        self.depends_on = kwargs.get('depends_on', [])
+        # Default callback will be print
+        self.callback = kwargs.get('callback', print)
+        super(BaseConsumer, self).__init__(host, port)
 
     def subscribe(self):
         self.connect()
@@ -93,9 +98,10 @@ class BaseConsumer(SocketClient):
 
     def on_message(self, message):
         if message != 'null':
+            self.callback(message)
             self.ack_message(message)
 
-    def start_consuming(self, poll_interval=0.5):
+    def start_consuming(self, poll_interval):
         print("Press Ctrl C to Kill")
         self.subscribe()
         time.sleep(poll_interval)
@@ -106,3 +112,12 @@ class BaseConsumer(SocketClient):
             if received_data:
                 self.on_message(received_data)
             time.sleep(poll_interval)
+
+
+def consume_messages(host, port, kwargs):
+    consumer = BaseConsumer(host, port, **kwargs)
+    try:
+        poll_interval = kwargs.get('poll_interval', 0.5)
+        consumer.start_consuming(poll_interval)
+    except KeyboardInterrupt:
+        consumer.unsubscribe()

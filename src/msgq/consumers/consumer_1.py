@@ -1,19 +1,21 @@
 import sys
 
-from msgq.client import BaseConsumer
+from msgq.client import consume_messages
 
-class ConsumerOne(BaseConsumer):
-    queue = 'notifications'
-    name = 'A'
-    expression = 'User-'
+host = '127.0.0.1'
+port = 9996
 
-    def on_message(self, message):
-        if message != "null":
-            print("Message received", message)
-            super(ConsumerOne, self).on_message(message)
+if len(sys.argv) > 1:
+    port = sys.argv[1]
 
-c = ConsumerOne('127.0.0.1', 9996)
-try:
-    c.start_consuming(poll_interval=2)
-except KeyboardInterrupt:
-    c.unsubscribe()
+def callback(message):
+    print("Receved in callback for consumer 1", message)
+
+kwargs = {
+    'queue': 'notifications',
+    'name': 'A',
+    'expression': 'User-',
+    'callback': callback
+}
+
+consume_messages(host, port, kwargs)

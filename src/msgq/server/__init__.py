@@ -75,7 +75,7 @@ class Server(SocketServer.BaseRequestHandler):
             sub = queue_manager.get_subscriber_by_name(dependency, 
                 payload['expression'])
             if sub:
-                sub.add_dependency(dependency)
+                sub.add_dependency(subscriber)
                 subscriber.add_parent(sub)
 
         self.reply('Subscribed {0} to topic {1} of queue {2}'.format(

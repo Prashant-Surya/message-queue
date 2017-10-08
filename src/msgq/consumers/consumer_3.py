@@ -13,9 +13,10 @@ def callback(message):
 
 kwargs = {
     'queue': 'notifications',
-    'name': 'B',
+    'name': 'C',
     'expression': 'User-',
-    'callback': callback
+    'callback': callback,
+    'depends_on': ['A', 'B']
 }
 
 consume_messages(host, port, kwargs)
