@@ -14,6 +14,7 @@ class Server(SocketServer.BaseRequestHandler):
         ACTION_MAP = {
             'PUBLISH': self.publish,
             'SUBSCRIBE': self.subscribe,
+            'UNSUBSCRIBE': self.unsubscribe,
             'GET': self.consume,
             'ACK': self.acknowledge
         }
@@ -80,6 +81,12 @@ class Server(SocketServer.BaseRequestHandler):
         self.reply('Subscribed {0} to topic {1} of queue {2}'.format(
                             subscriber.name, payload['expression'],
                             subscriber.queue))
+
+    def unsubscribe(self, payload):
+        subscriber = self.queue_manager.get_subscriber_by_name(
+            payload['name'], payload['expression'])
+        self.queue_manager.unsubscribe(subscriber)
+        print("Unsubscribed ", subscriber.name)
 
     def reply(self, message):
         self.socket.sendto(message.encode('utf-8'), self.client_address)

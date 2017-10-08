@@ -45,6 +45,7 @@ class BaseConsumer(SocketClient):
     expression = ''
     name = ''
     depends_on = []
+    is_consuming = True
 
     def subscribe(self):
         self.connect()
@@ -54,6 +55,18 @@ class BaseConsumer(SocketClient):
             'name': self.name,
             'expression': self.expression,
             'depends_on': self.depends_on
+        }
+        self.send(message)
+        received_data = self.decode(self.sock.recv(10240))
+        print(received_data)
+
+    def unsubscribe(self):
+        self.is_consuming = False
+        message = {
+            'action': 'UNSUBSCRIBE',
+            'name': self.name,
+            'queue_name': self.queue,
+            'expression': self.expression
         }
         self.send(message)
         received_data = self.decode(self.sock.recv(10240))
@@ -83,9 +96,10 @@ class BaseConsumer(SocketClient):
             self.ack_message(message)
 
     def start_consuming(self, poll_interval=0.5):
+        print("Press Ctrl C to Kill")
         self.subscribe()
         time.sleep(poll_interval)
-        while True:
+        while self.is_consuming:
             #self.connect()
             self.get_message()
             received_data = self.decode(self.sock.recv(1024000))
