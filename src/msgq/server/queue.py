@@ -39,7 +39,7 @@ class MessageQueue(OrderedDict):
         self[message] = value
 
     def requeue(self, message):
-        self.queue.pop(message,None)
+        self.pop(message,None)
         if message not in self.ack_map:
             self.ack_map[message] = 3
         self.ack_map[message] -= 1

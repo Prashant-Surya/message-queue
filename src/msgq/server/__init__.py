@@ -33,16 +33,6 @@ class Server(SocketServer.BaseRequestHandler):
             print("Invalid action ", action)
             return
         method(payload)
-        '''
-        if action == 'PUBLISH':
-            self.publish(payload)
-        elif action == 'SUBSCRIBE':
-            self.subscribe(payload)
-        elif action == 'GET':
-            self.consume(payload)
-        elif action == 'ACK':
-            self.acknowledge(payload)
-        '''
 
     def consume(self, payload):
         subscriber = self.queue_manager.get_subscriber_by_name(

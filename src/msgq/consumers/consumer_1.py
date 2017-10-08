@@ -8,7 +8,7 @@ class ConsumerOne(BaseConsumer):
     def on_message(self, message):
         if message != "null":
             print("Message received", message)
-            #super(ConsumerOne, self).on_message(message)
+            super(ConsumerOne, self).on_message(message)
 
 c = ConsumerOne('127.0.0.1', 9996)
 c.start_consuming(poll_interval=2)
