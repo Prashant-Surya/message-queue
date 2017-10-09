@@ -13,7 +13,7 @@ $ python3 start_server.py 9996
 
 ### Run consumers
 
-Open three different terminal windows and activate virtualenv using 
+Open three different terminal windows and activate virtualenv using
 ```sh
 $ source venv/bin/activate
 ```
