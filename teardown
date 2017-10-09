@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -ex
+rm -rf venv
+find src -name *.pyc -delete
+find src -name __pycache__ -delete
+rm -rf src/*.egg-info
